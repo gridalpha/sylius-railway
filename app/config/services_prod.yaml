@@ -1,0 +1,7 @@
+# Loaded after config/services.yaml, so this definition wins over the
+# App\ autowiring resource for the same class.
+services:
+    App\Command\RailwayBootstrapCommand:
+        autowire: true
+        autoconfigure: true
+        public: false

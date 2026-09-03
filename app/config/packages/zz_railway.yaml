@@ -1,0 +1,24 @@
+# Railway-specific overrides. Loaded last, so these win over the skeleton's
+# own config/packages files.
+framework:
+    # Railway's edge reaches the container from 100.64.0.0/10 and appends its
+    # own public address (152.233.0.0/17) to X-Forwarded-For. Symfony walks the
+    # header right to left discarding trusted hops, so all three ranges have to
+    # be listed for getClientIp() to land on the real visitor.
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-proto', 'x-forwarded-port', 'x-forwarded-prefix']
+
+    session:
+        # redis://... in the template, file://... when no Redis is attached.
+        handler_id: '%env(SESSION_HANDLER_DSN)%'
+        cookie_secure: auto
+        cookie_samesite: lax
+
+    cache:
+        app: cache.adapter.redis
+        default_redis_provider: '%env(REDIS_URL)%'
+
+parameters:
+    env(TRUSTED_PROXIES): '100.64.0.0/10,fd00::/8,152.233.0.0/17'
+    env(SESSION_HANDLER_DSN): ''
+    env(REDIS_URL): ''
