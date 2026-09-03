@@ -90,11 +90,6 @@ RUN set -eux; \
     sh -n /usr/local/bin/sylius-entrypoint; \
     php -l src/Command/RailwayBootstrapCommand.php; \
     php -l src/Controller/RailwayHealthController.php; \
-    DATABASE_URL="mysql://sylius:sylius@127.0.0.1:3306/sylius?charset=utf8mb4" \
-      REDIS_URL="redis://127.0.0.1:6379" \
-      SESSION_HANDLER_DSN="redis://127.0.0.1:6379/1" \
-      APP_SECRET="build" TRUSTED_PROXIES="127.0.0.1" \
-      php bin/console cache:warmup --env=prod; \
     php bin/console assets:install public --env=prod --no-debug; \
     mkdir -p /srv/sylius/var /srv/sylius/public/media /tmp/nginx; \
     chown -R www-data:www-data /srv/sylius/var /srv/sylius/public; \

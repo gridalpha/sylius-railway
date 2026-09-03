@@ -140,6 +140,12 @@ web)
     fi
 
     write_payment_key
+
+    # Some Symfony cache warmers open a database connection, so the cache is
+    # built here rather than in the image, where no database exists.
+    log "warming the application cache"
+    console cache:warmup --no-interaction
+
     chown -R www-data:www-data "$DATA_DIR" "$APP_DIR/var" 2>/dev/null || true
 
     sed -i "s|__PORT__|${PORT}|g" /etc/nginx/nginx.conf
