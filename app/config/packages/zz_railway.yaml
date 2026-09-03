@@ -20,5 +20,6 @@ framework:
 
 parameters:
     env(TRUSTED_PROXIES): '100.64.0.0/10,fd00::/8,152.233.0.0/17'
-    env(SESSION_HANDLER_DSN): ''
-    env(REDIS_URL): ''
+    # Build-time placeholders only; the entrypoint always exports the real ones.
+    env(SESSION_HANDLER_DSN): 'file:///srv/sylius/var/sessions'
+    env(REDIS_URL): 'redis://127.0.0.1:6379'
