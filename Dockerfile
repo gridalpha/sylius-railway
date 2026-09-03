@@ -93,7 +93,9 @@ RUN set -eux; \
     php bin/console assets:install public --env=prod --no-debug; \
     mkdir -p /srv/sylius/var /srv/sylius/public/media /tmp/nginx; \
     chown -R www-data:www-data /srv/sylius/var /srv/sylius/public; \
-    nginx -t; \
+    sed 's|__PORT__|8080|g' /etc/nginx/nginx.conf > /tmp/nginx-test.conf; \
+    nginx -t -c /tmp/nginx-test.conf; \
+    rm -f /tmp/nginx-test.conf; \
     chown -R nginx:nginx /tmp/nginx /var/lib/nginx
 
 EXPOSE 8080
