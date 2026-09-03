@@ -23,3 +23,14 @@ parameters:
     # Build-time placeholders only; the entrypoint always exports the real ones.
     env(SESSION_HANDLER_DSN): 'file:///srv/sylius/var/sessions'
     env(REDIS_URL): 'redis://127.0.0.1:6379'
+
+when@prod:
+    monolog:
+        handlers:
+            # Symfony's prod defaults bury errors in a file nobody can read on
+            # Railway; this puts them in the deploy log.
+            railway_stderr:
+                type: stream
+                path: 'php://stderr'
+                level: error
+                channels: ['!event']

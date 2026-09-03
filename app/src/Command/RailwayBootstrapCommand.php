@@ -87,6 +87,28 @@ final class RailwayBootstrapCommand extends Command
             }
         }
 
+        // Sylius resolves the channel from the request Host, and both the
+        // installer and the sample-data fixtures leave it null or "localhost",
+        // which 500s every shop page on any other domain. Only a hostname that
+        // was never chosen deliberately is rewritten, so an operator pointing a
+        // channel at a custom domain is never overruled.
+        $publicDomain = trim((string) ($_SERVER['RAILWAY_PUBLIC_DOMAIN'] ?? $_ENV['RAILWAY_PUBLIC_DOMAIN'] ?? ''));
+        if ('' !== $publicDomain) {
+            $rewritten = 0;
+            foreach ($channelRepository->findAll() as $channel) {
+                $hostname = $channel->getHostname();
+                if (null === $hostname || '' === $hostname || 'localhost' === $hostname) {
+                    $channel->setHostname($publicDomain);
+                    ++$rewritten;
+                }
+            }
+
+            if ($rewritten > 0) {
+                $this->entityManager->flush();
+                $io->writeln(sprintf('Pointed %d channel(s) at "%s".', $rewritten, $publicDomain));
+            }
+        }
+
         $adminRepository = $this->entityManager->getRepository(AdminUser::class);
 
         /** @var AdminUserInterface|null $admin */
