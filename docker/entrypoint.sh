@@ -38,6 +38,15 @@ else
     export SESSION_HANDLER_DSN="${SESSION_HANDLER_DSN:-file://${DATA_DIR}/sessions}"
 fi
 
+# -------------------------------------------------------------------- mail ---
+# ${{mailpit.RAILWAY_PRIVATE_DOMAIN}} renders empty until that service owns a
+# deployment, which is exactly what a template's first deploy looks like, so
+# repair the DSN on its shape rather than trusting the reference.
+case "${MAILER_DSN:-}" in
+    ""|"smtp://:"*|"smtp://:1025") MAILER_DSN="smtp://mailpit.railway.internal:1025" ;;
+esac
+export MAILER_DSN
+
 # ------------------------------------------------------------------- paths ---
 mkdir -p \
     "$DATA_DIR/media" \
