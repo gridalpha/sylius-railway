@@ -22,7 +22,7 @@ RUN set -eux; \
     curl -fsSL "https://github.com/Sylius/Sylius-Standard/archive/refs/heads/${SYLIUS_STANDARD_REF}.tar.gz" -o /tmp/sylius.tar.gz; \
     tar -xzf /tmp/sylius.tar.gz --strip-components=1 -C /srv/sylius; \
     rm -f /tmp/sylius.tar.gz; \
-    test -f composer.json; test -f composer.lock
+    test -f composer.json
 
 # Files this deployment adds or replaces (config, console command, health route).
 COPY app/ /srv/sylius/
@@ -34,7 +34,7 @@ ENV APP_ENV=prod \
     DATABASE_URL="mysql://sylius:sylius@127.0.0.1:3306/sylius?charset=utf8mb4"
 
 RUN set -eux; \
-    composer install --no-dev --no-scripts --no-interaction --prefer-dist --optimize-autoloader; \
+    composer update --no-dev --no-scripts --no-interaction --prefer-dist --optimize-autoloader; \
     composer clear-cache
 
 ########################################
